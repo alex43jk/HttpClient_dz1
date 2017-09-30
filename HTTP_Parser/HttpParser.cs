@@ -14,7 +14,7 @@ namespace HTTP_Parser
     {
         List<Photo> photos;
 
-        public async void GetPhotos(string url)
+        public async void GetPhotos(string url) //Вызов этого метода идет из MainActivity.cs
         {
             photos = await GetPhotoList(url);
         }
@@ -24,19 +24,19 @@ namespace HTTP_Parser
             var result = new List<Photo>();
             var httpClient = new HttpClient(new HttpClientHandler())
             {
-                BaseAddress = new Uri(url)
+                BaseAddress = new Uri(url) //передаем наш url из MainActivity, чтобы обратиться к API ВК
             };
             httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); //добавляем headers
 
-            var resp = await httpClient.GetAsync(url).ConfigureAwait(false);
+            var resp = await httpClient.GetAsync(url).ConfigureAwait(false); //Отправляем запрос
 
-            if (resp.IsSuccessStatusCode)
+            if (resp.IsSuccessStatusCode) //Если http-ответ успешен
             {
                 var content = resp.Content;
-                string task = await content.ReadAsStringAsync().ConfigureAwait(false);
+                string task = await content.ReadAsStringAsync().ConfigureAwait(false); //получаем JSON
 
-                var test = JsonConvert.DeserializeObject<Root>(task);
+                var test = JsonConvert.DeserializeObject<Root>(task); //десериализация json-файла
                 return test.Response.Items;
             }
             return new List<Photo>();
@@ -53,7 +53,7 @@ namespace HTTP_Parser
             public List<Photo> Items { get; set; }
         }
 
-        public class Photo
+        public class Photo // Класс для хранения данных из Json (три вида фотки - разные по размеру, долгота и широта)
         {
             public string Photo_75 { get; set; }
             public string Photo_130 { get; set; }
